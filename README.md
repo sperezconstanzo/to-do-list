@@ -1,3 +1,5 @@
+This is a to-do list SPA. To run, execute run.sh on the parent directory
+
 Package             		Version
 ------------------- 		-------
 asgiref             		3.4.1  
@@ -13,17 +15,10 @@ sqlparse            		0.4.2
 testing-library/jest-dom	5.16.1
 testing-library/react		12.1.2
 testing-library/user-event	13.5.0
+react						17.0.2
 react-dom					17.0.2
 react-scripts				5.0.0
-react						17.0.2
-testing-library/jest-dom	5.16.1
-testing-library/react 		12.1.2
-testing-library/user-event 	13.5.0
+reactstrap					8.9.0
 axios						0.21.1
 bootstrap					4.6.0
-react-dom					17.0.2
-react-scripts				5.0.0
-react						17.0.2
-reactstrap					8.9.0
 web-vitals					2.1.3
-
