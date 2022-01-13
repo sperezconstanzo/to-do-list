@@ -1,40 +1,14 @@
 import React, { Component } from "react";
 import Modal from "./components/Modal";
-
-const todoItems = [
-  {
-    id: 1,
-    title: "foo",
-    description: "Lorem ipsum dolor sit amet",
-    completed: true,
-  },
-  {
-    id: 2,
-    title: "bar",
-    description: "consectetur adipiscing elit",
-    completed: true,
-  },
-  {
-    id: 3,
-    title: "baz",
-    description: "Etiam placerat quam purus",
-    completed: false,
-  },
-  {
-    id: 4,
-    title: "bat",
-    description: "sodales ullamcorper nunc porta a",
-    completed: false,
-  },
-];
+import axios from "axios";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       viewCompleted: false,
-      todoList: todoItems,
-            modal: false,
+      todoList: [],
+      modal: false,
       activeItem: {
         title: "",
         description: "",
@@ -43,6 +17,17 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList = () => {
+    axios
+      .get("/api/todos/")
+      .then((res) => this.setState({ todoList: res.data }))
+      .catch((err) => console.log(err));
+  };
+
   toggle = () => {
     this.setState({ modal: !this.state.modal });
   };
@@ -50,11 +35,21 @@ class App extends Component {
   handleSubmit = (item) => {
     this.toggle();
 
-    alert("save" + JSON.stringify(item));
+    if (item.id) {
+      axios
+        .put(`/api/todos/${item.id}/`, item)
+        .then((res) => this.refreshList());
+      return;
+    }
+    axios
+      .post("/api/todos/", item)
+      .then((res) => this.refreshList());
   };
 
   handleDelete = (item) => {
-    alert("delete" + JSON.stringify(item));
+    axios
+      .delete(`/api/todos/${item.id}/`)
+      .then((res) => this.refreshList());
   };
 
   createItem = () => {
@@ -79,14 +74,14 @@ class App extends Component {
     return (
       <div className="nav nav-tabs">
         <span
-          className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
           onClick={() => this.displayCompleted(true)}
+          className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
         >
           Complete
         </span>
         <span
-          className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
           onClick={() => this.displayCompleted(false)}
+          className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
         >
           Incomplete
         </span>
@@ -97,7 +92,7 @@ class App extends Component {
   renderItems = () => {
     const { viewCompleted } = this.state;
     const newItems = this.state.todoList.filter(
-      (item) => item.completed == viewCompleted
+      (item) => item.completed === viewCompleted
     );
 
     return newItems.map((item) => (
